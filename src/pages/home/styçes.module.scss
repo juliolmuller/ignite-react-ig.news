@@ -1,0 +1,72 @@
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  height: calc(100vh - var(--header-height));
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 var(--container-x-gutter);
+
+  img {
+    order: 2;
+  }
+
+  section {
+    order: 1;
+  }
+}
+
+.greetings {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.slogan {
+  margin-top: 2.5rem;
+  font-size: 4.5rem;
+  font-weight: 900;
+  line-height: 1;
+
+  strong {
+    color: var(--color-cyan-500);
+    font-weight: inherit;
+  }
+}
+
+.actionCall {
+  margin-top: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.5;
+
+  span {
+    display: block;
+    color: var(--color-cyan-500);
+  }
+}
+
+.subscribeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 4rem;
+  width: 260px;
+  border: none;
+  border-radius: 2rem;
+  background-color: var(--color-yellow-500);
+  margin-top: 2.5rem;
+
+  color: var(--color-grey-900);
+  font-size: 1.25rem;
+  font-weight: 700;
+
+  transition: filter 150ms;
+
+  &:hover {
+    filter: brightness(80%);
+  }
+}
