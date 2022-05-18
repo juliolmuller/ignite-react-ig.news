@@ -1,5 +1,5 @@
 .wrapper {
-  height: 5rem;
+  height: var(--header-height);
   width: 100%;
   border-bottom: 1px solid var(--color-grey-700);
 
@@ -7,25 +7,25 @@
     display: flex;
     align-items: center;
 
-    height: 100%;
+    height: var(--header-height);
     width: 100%;
-    max-width: 1120px;
+    max-width: var(--container-max-width);
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 var(--container-x-gutter);
 
     nav {
-      height: 100%;
+      height: var(--header-height);
       margin-left: 5rem;
 
       a {
         position: relative;
         display: inline-block;
 
-        height: 100%;
+        height: var(--header-height);
         padding: 0.5rem;
 
         color: var(--color-grey-300);
-        line-height: 5rem;
+        line-height: var(--header-height);
         transition: color 150ms;
 
         &:hover {
