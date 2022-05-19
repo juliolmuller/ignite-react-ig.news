@@ -5,14 +5,14 @@ import stripe from '~/services/stripe';
 
 import classes from './styles.module.scss';
 
-export interface HomeProps {
+export interface HomePageProps {
   product: {
     priceId: string;
     amount: number;
   };
 }
 
-export default function Home({ product }: HomeProps) {
+export default function HomePage({ product }: HomePageProps) {
   const subscriptionPrice = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -49,7 +49,7 @@ export default function Home({ product }: HomeProps) {
   );
 }
 
-export const getStaticProps: GetStaticProps<HomeProps> = async () => {
+export const getStaticProps: GetStaticProps<HomePageProps> = async () => {
   const price = await stripe.prices.retrieve(process.env.STRIPE_PRICE_ID!, {
     expand: ['product'],
   });
