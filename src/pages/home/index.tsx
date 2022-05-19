@@ -1,8 +1,23 @@
+import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 
-import classes from './styçes.module.scss';
+import stripe from '~/services/stripe';
 
-export default function Home() {
+import classes from './styles.module.scss';
+
+export interface HomeProps {
+  product: {
+    priceId: string;
+    amount: number;
+  };
+}
+
+export default function Home({ product }: HomeProps) {
+  const subscriptionPrice = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(product.amount);
+
   return (
     <>
       <Head>
@@ -21,8 +36,8 @@ export default function Home() {
           </h1>
 
           <p className={classes.actionCall}>
-            Get acess to all the publications
-            <span>for $9,90/month</span>
+            Get access to all the publications
+            <span>for {subscriptionPrice}/month</span>
           </p>
 
           <button className={classes.subscribeBtn} type="button">
@@ -33,3 +48,18 @@ export default function Home() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
+  const price = await stripe.prices.retrieve(process.env.STRIPE_PRICE_ID!, {
+    expand: ['product'],
+  });
+
+  return {
+    props: {
+      product: {
+        priceId: price.id,
+        amount: (price.unit_amount ?? 0) / 100,
+      },
+    },
+  };
+};
