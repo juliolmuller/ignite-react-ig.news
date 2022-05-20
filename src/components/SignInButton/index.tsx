@@ -1,24 +1,28 @@
-import { useState } from 'react';
+import { signIn, signOut, useSession } from 'next-auth/react';
 import { FaGithub } from 'react-icons/fa';
 import { FiX } from 'react-icons/fi';
 
 import classes from './styles.module.scss';
 
 export default function SignInButton() {
-  const [isAuthenticated, setAuthenticated] = useState(false);
+  const session = useSession();
 
-  function handleClick() {
-    setAuthenticated(!isAuthenticated);
+  function handleSignIn() {
+    signIn('github');
   }
 
-  return isAuthenticated ? (
-    <button className={classes.wrapper} type="button" onClick={handleClick}>
+  function handleSignOut() {
+    signOut();
+  }
+
+  return session.status === 'authenticated' ? (
+    <button className={classes.wrapper} type="button">
       <FaGithub color="#04d361" />
-      Julio L. Muller
-      <FiX color="#737380" />
+      {session.data.user?.name}
+      <FiX color="#737380" title="Sign out" onClick={handleSignOut} />
     </button>
   ) : (
-    <button className={classes.wrapper} type="button" onClick={handleClick}>
+    <button className={classes.wrapper} type="button" onClick={handleSignIn}>
       <FaGithub color="#eba417" />
       Sign in with GutHub
     </button>
