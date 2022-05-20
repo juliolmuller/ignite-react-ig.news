@@ -61,7 +61,6 @@ export const getStaticProps: GetStaticProps<HomePageProps> = async () => {
         amount: (price.unit_amount ?? 0) / 100,
       },
     },
-    revalidate: 30, // 30 seconds
-    // revalidate: 60 * 60 * 24, // 24 hours
+    revalidate: 60 * 60 * 24, // 24 hours
   };
 };
