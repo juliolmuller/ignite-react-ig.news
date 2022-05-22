@@ -20,12 +20,28 @@ export default NextAuth({
     async signIn(context) {
       try {
         await fauna.query(
-          query.Create(query.Collection('users'), {
-            data: {
-              name: context.user.name,
-              email: context.user.email,
-            },
-          }),
+          query.If(
+            query.Not(
+              query.Exists(
+                query.Match(
+                  query.Index('user_by_email'),
+                  query.Casefold(context.user.email ?? ''),
+                ),
+              ),
+            ),
+            query.Create(query.Collection('users'), {
+              data: {
+                name: context.user.name,
+                email: context.user.email,
+              },
+            }),
+            query.Get(
+              query.Match(
+                query.Index('user_by_email'),
+                query.Casefold(context.user.email ?? ''),
+              ),
+            ),
+          ),
         );
 
         return true;
