@@ -1,6 +1,7 @@
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
 
+import SubscribeButton from '~/components/SubscribeButton';
 import stripe from '~/services/server/stripe';
 
 import classes from './styles.module.scss';
@@ -40,9 +41,7 @@ export default function HomePage({ product }: HomePageProps) {
             <span>for {subscriptionPrice}/month</span>
           </p>
 
-          <button className={classes.subscribeBtn} type="button">
-            Subscribe now
-          </button>
+          <SubscribeButton />
         </section>
       </main>
     </>

@@ -1,0 +1,21 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 4rem;
+  width: 260px;
+  border: none;
+  border-radius: 2rem;
+  background-color: var(--color-yellow-500);
+
+  color: var(--color-grey-900);
+  font-size: 1.25rem;
+  font-weight: 700;
+
+  transition: filter 150ms;
+
+  &:hover {
+    filter: brightness(80%);
+  }
+}
