@@ -2,6 +2,10 @@ import Stripe from 'stripe';
 
 import projectMeta from '~/../package.json';
 
+/**
+ * Stripe's service to be used on server-side
+ */
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2020-08-27',
   appInfo: {

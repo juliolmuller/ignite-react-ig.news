@@ -1,7 +1,7 @@
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
 
-import stripe from '~/services/stripe';
+import stripe from '~/services/server/stripe';
 
 import classes from './styles.module.scss';
 
@@ -24,7 +24,7 @@ export default function HomePage({ product }: HomePageProps) {
         <title>Home | ig.news</title>
       </Head>
 
-      <main className={classes.root}>
+      <main className={classes.wrapper}>
         <img src="/img/avatar.svg" alt="girl coding React" />
 
         <section>
