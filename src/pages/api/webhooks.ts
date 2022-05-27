@@ -16,6 +16,53 @@ async function requestToBuffer(readable: Readable) {
   return Buffer.concat(chunks);
 }
 
+async function saveSubscription(
+  subscriptionId: string,
+  customerId: string,
+  isUpdating = false,
+) {
+  const userRef = await fauna.query(
+    query.Select(
+      'ref',
+      query.Get(
+        query.Match(query.Index('user_by_stripe_customer_id'), customerId),
+      ),
+    ),
+  );
+  const stripeSubscription = await stripe.subscriptions.retrieve(
+    subscriptionId,
+  );
+  const subscription = {
+    user_id: userRef,
+    stripe_id: stripeSubscription.id,
+    stripe_price_id: stripeSubscription.items.data[0].price.id,
+    status: stripeSubscription.status,
+  };
+
+  if (isUpdating) {
+    await fauna.query(
+      query.Replace(
+        query.Select(
+          'ref',
+          query.Get(
+            query.Match(
+              query.Index('subscription_by_stripe_id'),
+              subscriptionId,
+            ),
+          ),
+        ),
+        { data: subscription },
+      ),
+    );
+  } else {
+    await fauna.query(
+      query.Create(query.Collection('subscriptions'), {
+        data: subscription,
+      }),
+    );
+  }
+}
+
 export const config = {
   api: {
     bodyParser: false,
@@ -47,32 +94,21 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
     case 'checkout.session.completed':
       const checkoutSession = stripeEvent.data
         .object as Stripe.Checkout.Session;
-      const userRef = await fauna.query(
-        query.Select(
-          'ref',
-          query.Get(
-            query.Match(
-              query.Index('user_by_stripe_customer_id'),
-              checkoutSession.customer?.toString()!,
-            ),
-          ),
-        ),
-      );
-      const subscription = await stripe.subscriptions.retrieve(
+      await saveSubscription(
         checkoutSession.subscription?.toString()!,
+        checkoutSession.customer?.toString()!,
       );
-      await fauna.query(
-        query.Create(query.Collection('subscriptions'), {
-          data: {
-            user_id: userRef,
-            stripe_id: subscription.id,
-            stripe_price_id: subscription.items.data[0].price.id,
-            status: subscription.status,
-          },
-        }),
-      );
-
       break;
+
+    case 'customer.subscription.create':
+    case 'customer.subscription.updated':
+    case 'customer.subscription.deleted':
+      const subscription = stripeEvent.data.object as Stripe.Subscription;
+      await saveSubscription(
+        subscription.id,
+        subscription.customer?.toString()!,
+        !stripeEvent.type.endsWith('created'),
+      );
   }
 
   response.status(200).end();
