@@ -100,7 +100,7 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
       );
       break;
 
-    case 'customer.subscription.create':
+    case 'customer.subscription.created':
     case 'customer.subscription.updated':
     case 'customer.subscription.deleted':
       const subscription = stripeEvent.data.object as Stripe.Subscription;
