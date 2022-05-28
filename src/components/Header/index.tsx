@@ -1,3 +1,6 @@
+import Link from 'next/link';
+
+import NavLink from '~/components/NavLink';
 import SignInButton from '~/components/SignInButton';
 
 import classes from './styles.module.scss';
@@ -9,10 +12,12 @@ export default function Header() {
         <img src="/img/logo.svg" alt="logo for ig.news" />
 
         <nav>
-          <a className={classes.active} href="">
+          <NavLink href="/home" exact activeClassName={classes.active}>
             Home
-          </a>
-          <a href="">Posts</a>
+          </NavLink>
+          <NavLink href="/posts" activeClassName={classes.active}>
+            Posts
+          </NavLink>
         </nav>
 
         <SignInButton />
