@@ -1,24 +1,22 @@
+import { asText } from '@prismicio/helpers';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
+import Link from 'next/link';
 
-import SubscribeButton from '~/components/SubscribeButton';
-import stripe from '~/services/server/stripe';
+import { getPrismicClient } from '~/services/server/prismic';
 
 import classes from './styles.module.scss';
 
 export interface PostsPageProps {
-  product: {
-    priceId: string;
-    amount: number;
-  };
+  posts: Array<{
+    slug: string;
+    title: string;
+    overview: string;
+    updatedAt: string;
+  }>;
 }
 
-export default function PostsPage({ product }: PostsPageProps) {
-  const subscriptionPrice = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(product.amount);
-
+export default function PostsPage({ posts }: PostsPageProps) {
   return (
     <>
       <Head>
@@ -27,39 +25,17 @@ export default function PostsPage({ product }: PostsPageProps) {
 
       <main className={classes.wrapper}>
         <ul className={classes.postsList}>
-          <li className={classes.postItem}>
-            <a href="#">
-              <time>30 de março de 2019</time>
-              <strong>Creating a Monorepo with Lerna & Yarn Workspaces</strong>
-              <p>
-                In this guide, you will learn how to create a Monorepo to manage
-                multiple packages with a shared build, test, and release
-                process.
-              </p>
-            </a>
-          </li>
-          <li className={classes.postItem}>
-            <a href="#">
-              <time>30 de março de 2019</time>
-              <strong>Creating a Monorepo with Lerna & Yarn Workspaces</strong>
-              <p>
-                In this guide, you will learn how to create a Monorepo to manage
-                multiple packages with a shared build, test, and release
-                process.
-              </p>
-            </a>
-          </li>
-          <li className={classes.postItem}>
-            <a href="#">
-              <time>30 de março de 2019</time>
-              <strong>Creating a Monorepo with Lerna & Yarn Workspaces</strong>
-              <p>
-                In this guide, you will learn how to create a Monorepo to manage
-                multiple packages with a shared build, test, and release
-                process.
-              </p>
-            </a>
-          </li>
+          {posts.map((post) => (
+            <li key={post.slug} className={classes.postItem}>
+              <Link href={`/posts/${post.slug}`}>
+                <a>
+                  <time>{post.updatedAt}</time>
+                  <strong>{post.title}</strong>
+                  <p>{post.overview}</p>
+                </a>
+              </Link>
+            </li>
+          ))}
         </ul>
       </main>
     </>
@@ -67,17 +43,30 @@ export default function PostsPage({ product }: PostsPageProps) {
 }
 
 export const getStaticProps: GetStaticProps<PostsPageProps> = async () => {
-  const price = await stripe.prices.retrieve(process.env.STRIPE_PRICE_ID!, {
-    expand: ['product'],
+  const prismicClient = getPrismicClient();
+  const posts = await prismicClient.getAllByType('post', {
+    pageSize: 20,
   });
 
   return {
     props: {
-      product: {
-        priceId: price.id,
-        amount: (price.unit_amount ?? 0) / 100,
-      },
+      posts: posts.map((post) => ({
+        slug: post.uid ?? '',
+        title: asText(post.data.title) ?? '',
+        overview:
+          post.data.content.find((content: any) => {
+            return content.type === 'paragraph';
+          })?.text ?? '',
+        updatedAt: new Date(post.last_publication_date).toLocaleDateString(
+          'pt-BR',
+          {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric',
+          },
+        ),
+      })),
     },
-    revalidate: 60 * 60 * 24, // 24 hours
+    revalidate: 60, // 1 hour
   };
 };
