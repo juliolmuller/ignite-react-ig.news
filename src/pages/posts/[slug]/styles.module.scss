@@ -1,0 +1,47 @@
+.wrapper {
+  height: calc(100vh - var(--header-height));
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 var(--container-x-gutter);
+}
+
+.postWrapper {
+  list-style: none;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 5rem 0 10rem;
+
+  h1 {
+    font-size: 3.5rem;
+    font-weight: 900;
+  }
+
+  time {
+    display: block;
+    margin-top: 1.5rem;
+
+    color: var(--color-grey-300);
+    font-size: 1rem;
+  }
+
+  main {
+    margin-top: 2rem;
+
+    color: var(--color-grey-100);
+    font-size: 1.125rem;
+    line-height: 2rem;
+
+    p, ul, ol {
+      margin: 1.5rem 0;
+    }
+
+    ul, ol {
+      padding-left: 1.5rem;
+
+      li {
+        margin: 0.5rem 0;
+      }
+    }
+  }
+}
