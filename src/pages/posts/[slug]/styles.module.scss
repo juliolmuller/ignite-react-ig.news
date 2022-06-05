@@ -45,3 +45,31 @@
     }
   }
 }
+
+.preview {
+  background: linear-gradient(
+    to bottom,
+    var(--color-grey-100),
+    transparent
+  );
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.continueReading {
+  margin: 4rem 0 2rem;
+  border-radius: 100px;
+  background-color: var(--color-grey-800);
+  padding: 2rem;
+
+  font-weight: 700;
+  text-align: center;
+
+  a {
+    color: var(--color-yellow-500);
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
