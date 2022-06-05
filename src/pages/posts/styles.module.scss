@@ -15,7 +15,6 @@
 
 .postItem {
   display: block;
-  transition: color 200ms;
 
   & + & {
     margin-top: 2rem;
@@ -39,6 +38,8 @@
 
   strong {
     display: block;
+    transition: color 200ms;
+
     margin-top: 1rem;
     font-size: 1.5rem;
     line-height: 2rem;
