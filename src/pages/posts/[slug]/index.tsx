@@ -1,5 +1,6 @@
 import { asHTML, asText } from '@prismicio/helpers';
 import { GetServerSideProps } from 'next';
+import { getSession } from 'next-auth/react';
 import Head from 'next/head';
 
 import { getPrismicClient } from '~/services/server/prismic';
@@ -39,6 +40,17 @@ export const getServerSideProps: GetServerSideProps<PostPageProps> = async ({
   req,
   params,
 }) => {
+  const session = await getSession({ req });
+
+  if (!session?.activeSubscription) {
+    return {
+      redirect: {
+        destination: '/home',
+        permanent: false,
+      },
+    };
+  }
+
   const postSlug = String(params?.slug);
   const prismicClient = getPrismicClient();
   const post = await prismicClient.getByUID('post', postSlug);

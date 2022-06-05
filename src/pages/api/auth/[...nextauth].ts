@@ -17,7 +17,7 @@ export default NextAuth({
     }),
   ],
   callbacks: {
-    async signIn(context) {
+    async signIn({ user }) {
       try {
         await fauna.query(
           query.If(
@@ -25,20 +25,20 @@ export default NextAuth({
               query.Exists(
                 query.Match(
                   query.Index('user_by_email'),
-                  query.Casefold(context.user.email ?? ''),
+                  query.Casefold(user.email ?? ''),
                 ),
               ),
             ),
             query.Create(query.Collection('users'), {
               data: {
-                name: context.user.name,
-                email: context.user.email,
+                name: user.name,
+                email: user.email,
               },
             }),
             query.Get(
               query.Match(
                 query.Index('user_by_email'),
-                query.Casefold(context.user.email ?? ''),
+                query.Casefold(user.email ?? ''),
               ),
             ),
           ),
@@ -47,6 +47,39 @@ export default NextAuth({
         return true;
       } catch {
         return false;
+      }
+    },
+    async session({ session }) {
+      try {
+        await fauna.query(
+          query.Get(
+            query.Intersection(
+              query.Match(
+                query.Index('subscription_by_user_id'),
+                query.Select(
+                  'ref',
+                  query.Get(
+                    query.Match(
+                      query.Index('user_by_email'),
+                      query.Casefold(session.user?.email ?? ''),
+                    ),
+                  ),
+                ),
+              ),
+              query.Match(query.Index('subscription_by_status'), 'active'),
+            ),
+          ),
+        );
+
+        return {
+          ...session,
+          activeSubscription: true,
+        };
+      } catch {
+        return {
+          ...session,
+          activeSubscription: false,
+        };
       }
     },
   },

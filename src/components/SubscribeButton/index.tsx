@@ -1,4 +1,5 @@
 import { signIn, useSession } from 'next-auth/react';
+import Link from 'next/link';
 
 import { getStripe } from '~/services/client/stripe';
 
@@ -25,7 +26,12 @@ export default function SubscribeButton() {
     }
   }
 
-  return (
+  return session.data?.activeSubscription ? (
+    <Link href="/posts" prefetch>
+      {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+      <a className={classes.wrapper}>Read latest posts</a>
+    </Link>
+  ) : (
     <button className={classes.wrapper} type="button" onClick={handleClick}>
       Subscribe now
     </button>
