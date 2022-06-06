@@ -89,5 +89,6 @@ export const getStaticProps: GetStaticProps<PostPreviewPageProps> = async ({
         ),
       },
     },
+    revalidate: 60 * 60 * 2, // 2 hours
   };
 };
