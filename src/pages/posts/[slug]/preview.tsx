@@ -61,7 +61,9 @@ export default function PostPreviewPage({ post }: PostPreviewPageProps) {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
-    paths: [],
+    paths: [
+      /* generate static pages on runtime (as per first access) */
+    ],
     fallback: 'blocking',
   };
 };
