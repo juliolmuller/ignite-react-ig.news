@@ -1,21 +1,21 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 
 import NavLink from '.';
 
 describe('component NavLink', () => {
   it('renders correctly', () => {
-    const { getByText } = render(<NavLink href="/">Home</NavLink>);
+    render(<NavLink href="/">Home</NavLink>);
 
-    expect(getByText('Home')).toBeInTheDocument();
+    expect(screen.getByText('Home')).toBeInTheDocument();
   });
 
   it('adds className "active" when link is active', () => {
-    const { getByText } = render(
+    render(
       <NavLink href="/" activeClassName="active">
         Home
       </NavLink>,
     );
 
-    expect(getByText('Home')).toHaveAttribute('class', 'active');
+    expect(screen.getByText('Home')).toHaveAttribute('class', 'active');
   });
 });
