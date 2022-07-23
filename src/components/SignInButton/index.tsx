@@ -24,7 +24,7 @@ export default function SignInButton() {
   ) : (
     <button className={classes.wrapper} type="button" onClick={handleSignIn}>
       <FaGithub color="#eba417" />
-      Sign in with GutHub
+      Sign in with GitHub
     </button>
   );
 }
