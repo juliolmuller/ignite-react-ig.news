@@ -33,5 +33,6 @@ module.exports = {
         propElementValues: 'always',
       },
     ],
+    'testing-library/prefer-screen-queries': 'off',
   },
 };
