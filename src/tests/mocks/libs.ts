@@ -4,4 +4,8 @@ jest.mock('next/router', () => ({
   }),
 }));
 
+jest.mock('next-auth/react', () => ({
+  useSession: () => ({}),
+}));
+
 export {}; // only to pass through TS compiler "isolateModule" rule
