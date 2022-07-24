@@ -27,7 +27,7 @@ export default function SubscribeButton() {
   }
 
   return session.data?.activeSubscription ? (
-    <Link href="/posts" prefetch>
+    <Link href="/posts">
       {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
       <a className={classes.wrapper}>Read latest posts</a>
     </Link>
