@@ -18,8 +18,6 @@ export default function SubscribeButton() {
       const response = await fetch('/api/subscriptions', { method: 'POST' });
       const { sessionId } = await response.json();
       const stripe = await getStripe();
-      console.log(sessionId);
-
       await stripe?.redirectToCheckout({ sessionId });
     } catch (error: any) {
       alert(error.message);
