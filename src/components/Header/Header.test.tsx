@@ -1,12 +1,18 @@
 import { render, screen } from '@testing-library/react';
 
-import { useSessionMocked } from '~/tests/mocks/libs';
-
 import Header from '.';
+
+jest.mock('next/router', () => ({
+  useRouter: () => ({
+    asPath: '/',
+  }),
+}));
+jest.mock('next-auth/react', () => ({
+  useSession: () => ({}),
+}));
 
 describe('component Header', () => {
   it('renders correctly', () => {
-    useSessionMocked(false);
     render(<Header />);
 
     expect(screen.getByText('Home')).toBeInTheDocument();

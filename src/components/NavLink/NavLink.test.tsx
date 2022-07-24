@@ -2,6 +2,12 @@ import { render, screen } from '@testing-library/react';
 
 import NavLink from '.';
 
+jest.mock('next/router', () => ({
+  useRouter: () => ({
+    asPath: '/',
+  }),
+}));
+
 describe('component NavLink', () => {
   it('renders correctly', () => {
     render(<NavLink href="/">Home</NavLink>);

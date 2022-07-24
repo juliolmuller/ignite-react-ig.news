@@ -1,21 +1,41 @@
-import { render, screen } from '@testing-library/react';
-
-import { useSessionMocked } from '~/tests/mocks/libs';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { mocked } from 'jest-mock';
+import { signIn, signOut, useSession } from 'next-auth/react';
 
 import SignInButton from '.';
 
+jest.mock('next-auth/react');
+
 describe('component SignInButton', () => {
   it('renders when user is not authenticated', () => {
-    useSessionMocked(false);
+    mocked(useSession).mockReturnValueOnce({
+      status: 'unauthenticated',
+      data: null,
+    });
     render(<SignInButton />);
 
-    expect(screen.getByText('Sign in with GitHub')).toBeInTheDocument();
+    const signInButton = screen.getByText('Sign in with GitHub');
+    const signInMocked = mocked(signIn);
+    fireEvent.click(signInButton);
+
+    expect(signInButton).toBeInTheDocument();
+    expect(signInMocked).toHaveBeenCalled();
   });
 
   it('renders when user is authenticated', () => {
-    useSessionMocked(true);
+    mocked(useSession).mockReturnValueOnce({
+      status: 'authenticated',
+      data: { user: { name: 'John Doe' }, expires: '' },
+    });
     render(<SignInButton />);
 
-    expect(screen.getByText('John Doe')).toBeInTheDocument();
+    const signInButton = screen.getByText('John Doe');
+    const signOutButton = screen.getByTitle('Sign out');
+    const signOutMocked = mocked(signOut);
+    fireEvent.click(signOutButton);
+
+    expect(signInButton).toBeInTheDocument();
+    expect(signOutButton).toBeInTheDocument();
+    expect(signOutMocked).toHaveBeenCalled();
   });
 });
