@@ -37,7 +37,7 @@ export default function HomePage({ product }: HomePageProps) {
           </h1>
 
           <p className={classes.actionCall}>
-            Get access to all the publications
+            Get access to all posts
             <span>for {subscriptionPrice}/month</span>
           </p>
 
