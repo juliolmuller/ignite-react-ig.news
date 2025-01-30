@@ -3,9 +3,13 @@ import { mocked } from 'jest-mock';
 import { getSession, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
-import PostPreviewPage, { getStaticProps } from './preview';
+import PostPreviewPage, {
+  getStaticProps,
+} from '../../src/pages/posts/[slug]/preview';
 
-jest.mock('next/router');
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
+}));
 jest.mock('next-auth/react');
 jest.mock('@prismicio/helpers', () => ({
   asHTML: (value: any) => value.join(''),
@@ -38,7 +42,7 @@ describe('component PostPreviewPage', () => {
     mocked(useSession).mockReturnValueOnce({
       data: null,
       status: 'unauthenticated',
-    });
+    } as any);
 
     render(<PostPreviewPage post={postMocked} />);
 
@@ -52,9 +56,9 @@ describe('component PostPreviewPage', () => {
     const redirectMock = jest.fn();
     mocked(useRouter).mockReturnValueOnce({ replace: redirectMock } as any);
     mocked(useSession).mockReturnValueOnce({
-      data: { activeSubscription: 'fake-subscription-id', expires: '' },
+      data: { activeSubscription: true, expires: '' },
       status: 'authenticated',
-    });
+    } as any);
 
     render(<PostPreviewPage post={postMocked} />);
 

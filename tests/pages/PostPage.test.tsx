@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { mocked } from 'jest-mock';
 import { getSession } from 'next-auth/react';
 
-import PostPage, { getServerSideProps } from '.';
+import PostPage, { getServerSideProps } from '../../src/pages/posts/[slug]';
 
 jest.mock('next-auth/react');
 jest.mock('@prismicio/helpers', () => ({
@@ -68,6 +68,7 @@ describe('component PostPage', () => {
       expect.objectContaining({
         redirect: {
           destination: '/posts/test-post/preview',
+          permanent: false,
         },
       }),
     );

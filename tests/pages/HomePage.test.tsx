@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import HomePage, { getStaticProps } from '.';
+import HomePage, { getStaticProps } from '../../src/pages/home';
 
 jest.mock('~/components/SubscribeButton', () => () => null);
 jest.mock('~/services/server/stripe', () => ({

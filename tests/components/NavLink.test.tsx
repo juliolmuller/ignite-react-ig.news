@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import NavLink from '.';
+import NavLink from '../../src/components/NavLink';
 
 jest.mock('next/router', () => ({
   useRouter: () => ({

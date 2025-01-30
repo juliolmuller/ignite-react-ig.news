@@ -4,7 +4,7 @@ import { signIn, useSession } from 'next-auth/react';
 
 import { getStripe } from '~/services/client/stripe';
 
-import SubscribeButton from '.';
+import SubscribeButton from '../../src/components/SubscribeButton';
 
 jest.mock('next-auth/react');
 jest.mock('~/services/client/stripe');
@@ -14,7 +14,7 @@ describe('component SubscribeButton', () => {
     mocked(useSession).mockReturnValueOnce({
       status: 'unauthenticated',
       data: null,
-    });
+    } as any);
     render(<SubscribeButton />);
 
     const subscribeButton = screen.getByText('Subscribe now');
@@ -29,7 +29,7 @@ describe('component SubscribeButton', () => {
     mocked(useSession).mockReturnValueOnce({
       status: 'authenticated',
       data: { user: { name: 'John Doe' }, expires: '' },
-    });
+    } as any);
     render(<SubscribeButton />);
 
     const subscribeButton = screen.getByText('Subscribe now');
@@ -57,10 +57,10 @@ describe('component SubscribeButton', () => {
       status: 'authenticated',
       data: {
         user: { name: 'John Doe' },
-        activeSubscription: 'fake-subscription-id',
+        activeSubscription: true,
         expires: '',
       },
-    });
+    } as any);
     render(<SubscribeButton />);
 
     const subscribeButton = screen.getByText('Read latest posts');
