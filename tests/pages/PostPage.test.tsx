@@ -1,8 +1,7 @@
 import { render, screen } from '@testing-library/react';
-import { mocked } from 'jest-mock';
 import { getSession } from 'next-auth/react';
 
-import PostPage, { getServerSideProps } from '.';
+import PostPage, { getServerSideProps } from '../../src/pages/posts/[slug]';
 
 jest.mock('next-auth/react');
 jest.mock('@prismicio/helpers', () => ({
@@ -40,7 +39,7 @@ describe('component PostPage', () => {
   });
 
   it('loads server-side props when user is subscribed', async () => {
-    mocked(getSession).mockResolvedValueOnce({
+    jest.mocked(getSession).mockResolvedValueOnce({
       activeSubscription: 'fake-subscription-id',
     } as any);
 
@@ -56,7 +55,7 @@ describe('component PostPage', () => {
   });
 
   it('prepares for redirect when user is NOT subscribed', async () => {
-    mocked(getSession).mockResolvedValueOnce({
+    jest.mocked(getSession).mockResolvedValueOnce({
       activeSubscription: null,
     } as any);
 
@@ -68,6 +67,7 @@ describe('component PostPage', () => {
       expect.objectContaining({
         redirect: {
           destination: '/posts/test-post/preview',
+          permanent: false,
         },
       }),
     );

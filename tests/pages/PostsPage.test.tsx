@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import PostsPage, { getStaticProps } from '.';
+import PostsPage, { getStaticProps } from '../../src/pages/posts';
 
 jest.mock('@prismicio/helpers', () => ({
   asText: (value: any) => value,

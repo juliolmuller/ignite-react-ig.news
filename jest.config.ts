@@ -7,12 +7,9 @@ const config: Config.InitialOptions = {
       '<rootDir>/__mocks__/fileMock.js',
     '^.+\\.(css|sass|scss)$': 'identity-obj-proxy',
   },
-  setupFilesAfterEnv: ['<rootDir>/src/tests/setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
   testEnvironment: 'jsdom',
   testPathIgnorePatterns: ['/node_modules/', '/.next/'],
-  transform: {
-    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
-  },
 };
 
 export default config;

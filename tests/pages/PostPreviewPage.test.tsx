@@ -1,11 +1,14 @@
 import { render, screen } from '@testing-library/react';
-import { mocked } from 'jest-mock';
 import { getSession, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
-import PostPreviewPage, { getStaticProps } from './preview';
+import PostPreviewPage, {
+  getStaticProps,
+} from '../../src/pages/posts/[slug]/preview';
 
-jest.mock('next/router');
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
+}));
 jest.mock('next-auth/react');
 jest.mock('@prismicio/helpers', () => ({
   asHTML: (value: any) => value.join(''),
@@ -34,11 +37,11 @@ describe('component PostPreviewPage', () => {
   };
 
   it('renders correctly', () => {
-    mocked(useRouter).mockReturnValueOnce({} as any);
-    mocked(useSession).mockReturnValueOnce({
+    jest.mocked(useRouter).mockReturnValueOnce({} as any);
+    jest.mocked(useSession).mockReturnValueOnce({
       data: null,
       status: 'unauthenticated',
-    });
+    } as any);
 
     render(<PostPreviewPage post={postMocked} />);
 
@@ -50,11 +53,13 @@ describe('component PostPreviewPage', () => {
 
   it('redirects user with active subscription', () => {
     const redirectMock = jest.fn();
-    mocked(useRouter).mockReturnValueOnce({ replace: redirectMock } as any);
-    mocked(useSession).mockReturnValueOnce({
-      data: { activeSubscription: 'fake-subscription-id', expires: '' },
+    jest
+      .mocked(useRouter)
+      .mockReturnValueOnce({ replace: redirectMock } as any);
+    jest.mocked(useSession).mockReturnValueOnce({
+      data: { activeSubscription: true, expires: '' },
       status: 'authenticated',
-    });
+    } as any);
 
     render(<PostPreviewPage post={postMocked} />);
 
@@ -62,7 +67,7 @@ describe('component PostPreviewPage', () => {
   });
 
   it('loads static props correctly', async () => {
-    mocked(getSession).mockResolvedValueOnce({
+    jest.mocked(getSession).mockResolvedValueOnce({
       activeSubscription: null,
     } as any);
 
