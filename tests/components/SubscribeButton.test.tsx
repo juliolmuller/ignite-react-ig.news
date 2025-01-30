@@ -1,5 +1,4 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { mocked } from 'jest-mock';
 import { signIn, useSession } from 'next-auth/react';
 
 import { getStripe } from '~/services/client/stripe';
@@ -11,14 +10,14 @@ jest.mock('~/services/client/stripe');
 
 describe('component SubscribeButton', () => {
   it('renders and work correctly when user is not authenticated', () => {
-    mocked(useSession).mockReturnValueOnce({
+    jest.mocked(useSession).mockReturnValueOnce({
       status: 'unauthenticated',
       data: null,
     } as any);
     render(<SubscribeButton />);
 
     const subscribeButton = screen.getByText('Subscribe now');
-    const signInMocked = mocked(signIn);
+    const signInMocked = jest.mocked(signIn);
     fireEvent.click(subscribeButton);
 
     expect(subscribeButton).toBeInTheDocument();
@@ -26,7 +25,7 @@ describe('component SubscribeButton', () => {
   });
 
   it('renders and work correctly when user is authenticated but not subscribe', async () => {
-    mocked(useSession).mockReturnValueOnce({
+    jest.mocked(useSession).mockReturnValueOnce({
       status: 'authenticated',
       data: { user: { name: 'John Doe' }, expires: '' },
     } as any);
@@ -38,7 +37,7 @@ describe('component SubscribeButton', () => {
     Object.defineProperty(window, 'fetch', {
       value: () => Promise.resolve({ json: subscriptionCall }),
     });
-    mocked(getStripe).mockResolvedValueOnce({
+    jest.mocked(getStripe).mockResolvedValueOnce({
       redirectToCheckout: checkoutCall,
     } as any);
     fireEvent.click(subscribeButton);
@@ -53,7 +52,7 @@ describe('component SubscribeButton', () => {
   });
 
   it('renders and work correctly when user is authenticated and subscribe', () => {
-    mocked(useSession).mockReturnValueOnce({
+    jest.mocked(useSession).mockReturnValueOnce({
       status: 'authenticated',
       data: {
         user: { name: 'John Doe' },

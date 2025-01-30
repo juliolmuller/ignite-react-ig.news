@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-import { mocked } from 'jest-mock';
 import { getSession } from 'next-auth/react';
 
 import PostPage, { getServerSideProps } from '../../src/pages/posts/[slug]';
@@ -40,7 +39,7 @@ describe('component PostPage', () => {
   });
 
   it('loads server-side props when user is subscribed', async () => {
-    mocked(getSession).mockResolvedValueOnce({
+    jest.mocked(getSession).mockResolvedValueOnce({
       activeSubscription: 'fake-subscription-id',
     } as any);
 
@@ -56,7 +55,7 @@ describe('component PostPage', () => {
   });
 
   it('prepares for redirect when user is NOT subscribed', async () => {
-    mocked(getSession).mockResolvedValueOnce({
+    jest.mocked(getSession).mockResolvedValueOnce({
       activeSubscription: null,
     } as any);
 

@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-import { mocked } from 'jest-mock';
 import { getSession, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
@@ -38,8 +37,8 @@ describe('component PostPreviewPage', () => {
   };
 
   it('renders correctly', () => {
-    mocked(useRouter).mockReturnValueOnce({} as any);
-    mocked(useSession).mockReturnValueOnce({
+    jest.mocked(useRouter).mockReturnValueOnce({} as any);
+    jest.mocked(useSession).mockReturnValueOnce({
       data: null,
       status: 'unauthenticated',
     } as any);
@@ -54,8 +53,10 @@ describe('component PostPreviewPage', () => {
 
   it('redirects user with active subscription', () => {
     const redirectMock = jest.fn();
-    mocked(useRouter).mockReturnValueOnce({ replace: redirectMock } as any);
-    mocked(useSession).mockReturnValueOnce({
+    jest
+      .mocked(useRouter)
+      .mockReturnValueOnce({ replace: redirectMock } as any);
+    jest.mocked(useSession).mockReturnValueOnce({
       data: { activeSubscription: true, expires: '' },
       status: 'authenticated',
     } as any);
@@ -66,7 +67,7 @@ describe('component PostPreviewPage', () => {
   });
 
   it('loads static props correctly', async () => {
-    mocked(getSession).mockResolvedValueOnce({
+    jest.mocked(getSession).mockResolvedValueOnce({
       activeSubscription: null,
     } as any);
 

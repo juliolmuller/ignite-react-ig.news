@@ -1,5 +1,4 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { mocked } from 'jest-mock';
 import { signIn, signOut, useSession } from 'next-auth/react';
 
 import SignInButton from '../../src/components/SignInButton';
@@ -8,14 +7,14 @@ jest.mock('next-auth/react');
 
 describe('component SignInButton', () => {
   it('renders when user is not authenticated', () => {
-    mocked(useSession).mockReturnValueOnce({
+    jest.mocked(useSession).mockReturnValueOnce({
       status: 'unauthenticated',
       data: null,
     } as any);
     render(<SignInButton />);
 
     const signInButton = screen.getByText('Sign in with GitHub');
-    const signInMocked = mocked(signIn);
+    const signInMocked = jest.mocked(signIn);
     fireEvent.click(signInButton);
 
     expect(signInButton).toBeInTheDocument();
@@ -23,7 +22,7 @@ describe('component SignInButton', () => {
   });
 
   it('renders when user is authenticated', () => {
-    mocked(useSession).mockReturnValueOnce({
+    jest.mocked(useSession).mockReturnValueOnce({
       status: 'authenticated',
       data: { user: { name: 'John Doe' }, expires: '' },
     } as any);
@@ -31,7 +30,7 @@ describe('component SignInButton', () => {
 
     const signInButton = screen.getByText('John Doe');
     const signOutButton = screen.getByTitle('Sign out');
-    const signOutMocked = mocked(signOut);
+    const signOutMocked = jest.mocked(signOut);
     fireEvent.click(signOutButton);
 
     expect(signInButton).toBeInTheDocument();
