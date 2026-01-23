@@ -96,6 +96,7 @@ export default async (request: NextApiRequest, response: NextApiResponse): Promi
         subscription.customer?.toString() ?? '',
         !stripeEvent.type.endsWith('created'),
       );
+      break;
     }
   }
 
