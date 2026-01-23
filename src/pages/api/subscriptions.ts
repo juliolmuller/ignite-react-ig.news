@@ -6,13 +6,13 @@ import supabase from '~/services/server/supabase';
 import { type User } from '~/types';
 
 /**
- * Steps of this respirce:
+ * Steps of this response:
  * 1. Ensure a POST request was submitted;
  * 2. Ensure user is authenticated in Next Auth;
- * 3. Get user ref at FaunaDB;
- * 4. Ensure user exists at FaunaDB;
+ * 3. Get user from Supabase;
+ * 4. Ensure user exists at Supabase;
  * 5. Verify if user already has a Stripe customer ID;
- *    5.1. If not, create a new Stripe customer and save it at FaunaDB;
+ *    5.1. If not, create a new Stripe customer and save it at Supabase;
  * 6. Create a new Stripe checkout session;
  * 7. Return the session ID to the client.
  */
