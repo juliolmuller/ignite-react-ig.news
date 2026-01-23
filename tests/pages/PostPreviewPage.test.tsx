@@ -10,7 +10,7 @@ jest.mock('next/router', () => ({
 }));
 jest.mock('next-auth/react');
 jest.mock('@prismicio/helpers', () => ({
-  asHTML: (value: unknown) => (value as string).join(''),
+  asHTML: (value: unknown) => (value as string[]).join(''),
   asText: (value: unknown) => value as string,
 }));
 jest.mock('~/services/server/prismic', () => ({
