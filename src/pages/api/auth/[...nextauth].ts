@@ -23,10 +23,7 @@ export default NextAuth({
           query.If(
             query.Not(
               query.Exists(
-                query.Match(
-                  query.Index('user_by_email'),
-                  query.Casefold(user.email ?? ''),
-                ),
+                query.Match(query.Index('user_by_email'), query.Casefold(user.email ?? '')),
               ),
             ),
             query.Create(query.Collection('users'), {
@@ -35,12 +32,7 @@ export default NextAuth({
                 email: user.email,
               },
             }),
-            query.Get(
-              query.Match(
-                query.Index('user_by_email'),
-                query.Casefold(user.email ?? ''),
-              ),
-            ),
+            query.Get(query.Match(query.Index('user_by_email'), query.Casefold(user.email ?? ''))),
           ),
         );
 

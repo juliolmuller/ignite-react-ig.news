@@ -1,16 +1,16 @@
 import { query } from 'faunadb';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { type NextApiRequest, type NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
 
 import fauna from '~/services/server/fauna';
 import stripe from '~/services/server/stripe';
 
 interface FaunaUser {
-  ref: {
-    id: string;
-  };
   data: {
     stripe_customer_id?: string;
+  };
+  ref: {
+    id: string;
   };
 }
 
@@ -25,7 +25,7 @@ interface FaunaUser {
  * 6. Create a new Stripe checkout session;
  * 7. Return the session ID to the client.
  */
-export default async (request: NextApiRequest, response: NextApiResponse) => {
+export default async (request: NextApiRequest, response: NextApiResponse): Promise<void> => {
   if (request.method !== 'POST') {
     response.setHeader('Allow', 'POST');
     response.status(405).end('Method Not Allowed');
@@ -40,12 +40,7 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
   }
 
   const faunaUser = await fauna.query<FaunaUser>(
-    query.Get(
-      query.Match(
-        query.Index('user_by_email'),
-        query.Casefold(session.user.email),
-      ),
-    ),
+    query.Get(query.Match(query.Index('user_by_email'), query.Casefold(session.user.email))),
   );
 
   if (!faunaUser?.ref?.id) {

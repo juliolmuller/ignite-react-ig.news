@@ -1,3 +1,4 @@
+/* eslint-disable @eslint-community/eslint-comments/disable-enable-pair, @typescript-eslint/explicit-function-return-type */
 import { render, screen } from '@testing-library/react';
 
 import Header from '../../src/components/Header';

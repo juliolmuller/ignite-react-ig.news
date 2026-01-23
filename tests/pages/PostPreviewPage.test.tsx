@@ -1,18 +1,17 @@
+/* eslint-disable @eslint-community/eslint-comments/disable-enable-pair, @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any */
 import { render, screen } from '@testing-library/react';
 import { getSession, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
-import PostPreviewPage, {
-  getStaticProps,
-} from '../../src/pages/posts/[slug]/preview';
+import PostPreviewPage, { getStaticProps } from '../../src/pages/posts/[slug]/preview';
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
 jest.mock('next-auth/react');
 jest.mock('@prismicio/helpers', () => ({
-  asHTML: (value: any) => value.join(''),
-  asText: (value: any) => value,
+  asHTML: (value: unknown) => (value as string).join(''),
+  asText: (value: unknown) => value as string,
 }));
 jest.mock('~/services/server/prismic', () => ({
   getPrismicClient: () => ({
@@ -53,9 +52,7 @@ describe('component PostPreviewPage', () => {
 
   it('redirects user with active subscription', () => {
     const redirectMock = jest.fn();
-    jest
-      .mocked(useRouter)
-      .mockReturnValueOnce({ replace: redirectMock } as any);
+    jest.mocked(useRouter).mockReturnValueOnce({ replace: redirectMock } as any);
     jest.mocked(useSession).mockReturnValueOnce({
       data: { activeSubscription: true, expires: '' },
       status: 'authenticated',

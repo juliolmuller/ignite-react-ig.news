@@ -1,3 +1,4 @@
+/* eslint-disable @eslint-community/eslint-comments/disable-enable-pair, @typescript-eslint/no-explicit-any */
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { signIn, useSession } from 'next-auth/react';
 
@@ -42,13 +43,11 @@ describe('component SubscribeButton', () => {
     } as any);
     fireEvent.click(subscribeButton);
 
-    /* eslint-disable testing-library/no-wait-for-multiple-assertions */
     await waitFor(() => {
       expect(subscribeButton).toBeInTheDocument();
       expect(subscriptionCall).toHaveBeenCalled();
       expect(checkoutCall).toHaveBeenCalled();
     });
-    /* eslint-enable */
   });
 
   it('renders and work correctly when user is authenticated and subscribe', () => {

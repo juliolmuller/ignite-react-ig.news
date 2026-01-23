@@ -1,15 +1,17 @@
-import { Session } from 'next-auth';
+import { type Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
-import { AppProps } from 'next/app';
+import { type AppProps } from 'next/app';
 
 import '~/styles.scss';
+import { type ReactNode } from 'react';
+
 import Header from '~/components/Header';
 
 export type MyApProps = AppProps<{
   session: Session;
 }>;
 
-export default function MyApp({ Component, pageProps }: MyApProps) {
+export default function MyApp({ Component, pageProps }: MyApProps): ReactNode {
   return (
     <SessionProvider session={pageProps.session}>
       <Header />

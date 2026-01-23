@@ -1,17 +1,18 @@
 import { signIn, signOut, useSession } from 'next-auth/react';
+import { type ReactNode } from 'react';
 import { FaGithub } from 'react-icons/fa';
 import { FiX } from 'react-icons/fi';
 
 import classes from './styles.module.scss';
 
-export default function SignInButton() {
+export default function SignInButton(): ReactNode {
   const session = useSession();
 
-  function handleSignIn() {
+  function handleSignIn(): void {
     signIn('github');
   }
 
-  function handleSignOut() {
+  function handleSignOut(): void {
     signOut();
   }
 
