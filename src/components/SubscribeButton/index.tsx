@@ -28,9 +28,8 @@ export default function SubscribeButton(): ReactNode {
   }
 
   return session.data?.activeSubscription ? (
-    <Link href="/posts">
-      {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-      <a className={classes.wrapper}>Read latest posts</a>
+    <Link href="/posts" className={classes.wrapper}>
+      Read latest posts
     </Link>
   ) : (
     <button className={classes.wrapper} type="button" onClick={handleClick}>

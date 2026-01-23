@@ -20,9 +20,8 @@ export default function NavLink({
   const actualClassName = matches ? activeClassName : '';
 
   return (
-    <Link href={href} {...props}>
-      {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-      <a className={actualClassName}>{children}</a>
+    <Link href={href} {...props} className={actualClassName}>
+      {children}
     </Link>
   );
 }

@@ -42,14 +42,11 @@ export default function PostPreviewPage({ post }: PostPreviewPageProps): ReactNo
             <h1>{post.title}</h1>
             <time>{post.updatedAt}</time>
           </header>
+
           <main className={classes.preview} dangerouslySetInnerHTML={{ __html: post.content }} />
+
           <div className={classes.continueReading}>
-            Wanna continue reading?{' '}
-            <Link href="/">
-              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-              <a>Subscribe now</a>
-            </Link>{' '}
-            🤗
+            Wanna continue reading? <Link href="/">Subscribe now</Link> 🤗
           </div>
         </article>
       </main>

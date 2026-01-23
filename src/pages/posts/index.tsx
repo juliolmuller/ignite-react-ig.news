@@ -31,12 +31,9 @@ export default function PostsPage({ posts }: PostsPageProps): ReactNode {
           {posts.map((post) => (
             <li key={post.slug} className={classes.postItem}>
               <Link href={`/posts/${post.slug}`}>
-                {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                <a>
-                  <time>{post.updatedAt}</time>
-                  <strong>{post.title}</strong>
-                  <p>{post.overview}</p>
-                </a>
+                <time>{post.updatedAt}</time>
+                <strong>{post.title}</strong>
+                <p>{post.overview}</p>
               </Link>
             </li>
           ))}
