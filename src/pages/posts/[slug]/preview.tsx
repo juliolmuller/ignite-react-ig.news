@@ -73,7 +73,7 @@ export const getStaticProps: GetStaticProps<PostPreviewPageProps> = async ({ par
       post: {
         slug: post.uid ?? '',
         title: asText(post.data.title) ?? '',
-        content: asHTML(post.data.content.splice(0, 3)) ?? '',
+        content: asHTML(post.data.content.slice(0, 3)) ?? '',
         updatedAt: new Date(post.last_publication_date).toLocaleDateString('pt-BR', {
           day: '2-digit',
           month: 'long',
