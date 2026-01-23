@@ -24,7 +24,7 @@
     "**/*.ts",
     "**/*.tsx",
     "**/*.d.ts",
-    "next.config.mjs"
+    "next.config.ts"
   ],
   "exclude": [
     "node_modules"

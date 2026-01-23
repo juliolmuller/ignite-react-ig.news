@@ -2,7 +2,7 @@ import NextDocument, { Head, Html, Main, NextScript } from 'next/document';
 import { type ReactElement } from 'react';
 
 export default class Document extends NextDocument {
-  public render(): ReactElement {
+  public render(): ReactElement<any> {
     return (
       <Html lang="en-US">
         <Head>

@@ -1,18 +1,21 @@
 {
   "name": "ignews",
-  "version": "1.0.1",
+  "version": "auto",
   "private": true,
   "license": "MIT",
   "author": "Julio L. Muller",
   "homepage": "https://jlm-ignews.vercel.app/",
+  "type": "module",
   "scripts": {
     "postinstall": "node -e \"require('fs').existsSync('.env') || require('fs').copyFileSync('.env.example', '.env')\"",
     "release": "semantic-release",
-    "webhooks": "./stripe listen --forward-to localhost:8080/api/webhooks",
     "dev": "next dev --port 8080",
+    "development": "bun run dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "eslint --fix src/ tests/ eslint.config.mjs jest.config.ts next.config.mjs",
+    "prod": "next start",
+    "production": "bun run prod",
+    "webhooks": "./stripe listen --forward-to localhost:8080/api/webhooks",
+    "lint": "eslint --fix src/ tests/ eslint.config.mjs jest.config.ts next.config.ts",
     "test": "jest"
   },
   "dependencies": {
@@ -21,10 +24,10 @@
     "@prismicio/types": "^0.2.9",
     "@stripe/stripe-js": "^7.9.0",
     "@supabase/supabase-js": "^2.91.1",
-    "next": "14.2.35",
+    "next": "15.5.9",
     "next-auth": "^4.24.13",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
     "react-icons": "^5.5.0",
     "stripe": "^20.2.0"
   },
@@ -38,7 +41,7 @@
     "@testing-library/react": "^16.3.2",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.19.7",
-    "@types/react": "18.3.27",
+    "@types/react": "19.2.9",
     "eslint": "^9.39.2",
     "eslint-config-any": "^2.3.1",
     "identity-obj-proxy": "^3.0.0",
@@ -48,9 +51,5 @@
     "sass": "^1.97.3",
     "semantic-release": "^25.0.2",
     "typescript": "^5.9.3"
-  },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
-  "overrides": {
-    "@types/react": "18.3.27"
   }
 }

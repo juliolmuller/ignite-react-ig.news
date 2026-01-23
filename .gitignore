@@ -16,8 +16,8 @@
 /build
 /dist
 
-# editor
-/.vscode
+# typescript
+*.tsbuildinfo
 
 # misc
 .DS_Store
