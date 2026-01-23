@@ -6,7 +6,7 @@
   "author": "Julio L. Muller",
   "homepage": "https://jlm-ignews.vercel.app/",
   "scripts": {
-    "webhooks": "stripe-webhooks listen --forward-to localhost:8080/api/webhooks",
+    "webhooks": "./stripe listen --forward-to localhost:8080/api/webhooks",
     "dev": "next dev --port 8080",
     "build": "next build",
     "start": "next start",

@@ -1,10 +1,10 @@
-import { query } from 'faunadb';
 import { type NextApiRequest, type NextApiResponse } from 'next';
 import { type Readable } from 'stream';
 import type Stripe from 'stripe';
 
-import fauna from '~/services/server/fauna';
 import stripe from '~/services/server/stripe';
+import supabase from '~/services/server/supabase';
+import { type User } from '~/types';
 
 async function requestToBuffer(readable: Readable): Promise<Buffer> {
   const chunks: Buffer[] = [];
@@ -21,37 +21,30 @@ async function saveSubscription(
   customerId: string,
   isUpdating = false,
 ): Promise<void> {
-  const userRef = await fauna.query(
-    query.Select(
-      'ref',
-      query.Get(query.Match(query.Index('user_by_stripe_customer_id'), customerId ?? '')),
-    ),
-  );
-  const stripeSubscription = await stripe.subscriptions.retrieve(subscriptionId ?? '');
-  const subscription = {
-    user_id: userRef,
+  const { data: userData } = await supabase
+    .from('users')
+    .select()
+    .eq('stripe_customer_id', customerId)
+    .single<User>()
+    .throwOnError();
+  const stripeSubscription = await stripe.subscriptions.retrieve(subscriptionId);
+  const subscriptionToSave = {
+    user_id: userData.id,
     stripe_id: stripeSubscription.id,
     stripe_price_id: stripeSubscription.items.data[0].price.id,
     status: stripeSubscription.status,
   };
 
   if (isUpdating) {
-    await fauna.query(
-      query.Replace(
-        query.Select(
-          'ref',
-          query.Get(query.Match(query.Index('subscription_by_stripe_id'), subscriptionId ?? '')),
-        ),
-        { data: subscription },
-      ),
-    );
-  } else {
-    await fauna.query(
-      query.Create(query.Collection('subscriptions'), {
-        data: subscription,
-      }),
-    );
+    await supabase
+      .from('subscriptions')
+      .update(subscriptionToSave)
+      .eq('stripe_id', stripeSubscription.id)
+      .throwOnError();
+    return;
   }
+
+  await supabase.from('subscriptions').insert(subscriptionToSave).throwOnError();
 }
 
 export const config = {

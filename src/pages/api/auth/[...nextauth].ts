@@ -1,8 +1,8 @@
-import { query } from 'faunadb';
 import NextAuth from 'next-auth';
 import GithubProvider from 'next-auth/providers/github';
 
-import fauna from '~/services/server/fauna';
+import supabase from '~/services/server/supabase';
+import { type User } from '~/types';
 
 export default NextAuth({
   providers: [
@@ -18,23 +18,28 @@ export default NextAuth({
   ],
   callbacks: {
     async signIn({ user }) {
+      if (!user.email) {
+        return false;
+      }
+
+      user.email = user.email.toLowerCase();
+
       try {
-        await fauna.query(
-          query.If(
-            query.Not(
-              query.Exists(
-                query.Match(query.Index('user_by_email'), query.Casefold(user.email ?? '')),
-              ),
-            ),
-            query.Create(query.Collection('users'), {
-              data: {
-                name: user.name,
-                email: user.email,
-              },
-            }),
-            query.Get(query.Match(query.Index('user_by_email'), query.Casefold(user.email ?? ''))),
-          ),
-        );
+        const { data: userData } = await supabase
+          .from('users')
+          .select()
+          .eq('email', user.email)
+          .maybeSingle<User>();
+
+        if (!userData) {
+          await supabase
+            .from('users')
+            .insert({
+              email: user.email,
+              name: user.name,
+            })
+            .throwOnError();
+        }
 
         return true;
       } catch {
@@ -43,25 +48,20 @@ export default NextAuth({
     },
     async session({ session }) {
       try {
-        await fauna.query(
-          query.Get(
-            query.Intersection(
-              query.Match(
-                query.Index('subscription_by_user_id'),
-                query.Select(
-                  'ref',
-                  query.Get(
-                    query.Match(
-                      query.Index('user_by_email'),
-                      query.Casefold(session.user?.email ?? ''),
-                    ),
-                  ),
-                ),
-              ),
-              query.Match(query.Index('subscription_by_status'), 'active'),
-            ),
-          ),
-        );
+        const { data: userData } = await supabase
+          .from('users')
+          .select()
+          .eq('email', session.user?.email?.toLowerCase() ?? '')
+          .single()
+          .throwOnError();
+
+        await supabase
+          .from('subscriptions')
+          .select('id')
+          .eq('status', 'active')
+          .eq('user_id', userData.id)
+          .single()
+          .throwOnError();
 
         return {
           ...session,

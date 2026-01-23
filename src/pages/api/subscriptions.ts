@@ -1,18 +1,9 @@
-import { query } from 'faunadb';
 import { type NextApiRequest, type NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
 
-import fauna from '~/services/server/fauna';
 import stripe from '~/services/server/stripe';
-
-interface FaunaUser {
-  data: {
-    stripe_customer_id?: string;
-  };
-  ref: {
-    id: string;
-  };
-}
+import supabase from '~/services/server/supabase';
+import { type User } from '~/types';
 
 /**
  * Steps of this respirce:
@@ -39,30 +30,33 @@ export default async (request: NextApiRequest, response: NextApiResponse): Promi
     return;
   }
 
-  const faunaUser = await fauna.query<FaunaUser>(
-    query.Get(query.Match(query.Index('user_by_email'), query.Casefold(session.user.email))),
-  );
+  const { data: userData } = await supabase
+    .from('users')
+    .select()
+    .eq('email', session.user.email)
+    .single<User>();
 
-  if (!faunaUser?.ref?.id) {
+  if (!userData?.id) {
     response.status(401).end('Unauthorized');
     return;
   }
 
-  let stripeCustomerId = faunaUser?.data?.stripe_customer_id;
+  let stripeCustomerId = userData?.stripe_customer_id;
 
   if (!stripeCustomerId) {
     const stripeCustomer = await stripe.customers.create({
       email: session.user.email,
-      //metadata: {}
     });
-    await fauna.query(
-      query.Update(query.Ref(query.Collection('users'), faunaUser.ref.id), {
-        data: {
-          stripe_customer_id: stripeCustomer.id,
-        },
-      }),
-    );
+
     stripeCustomerId = stripeCustomer.id;
+
+    await supabase
+      .from('users')
+      .update({
+        stripe_customer_id: stripeCustomerId,
+      })
+      .eq('id', userData.id)
+      .throwOnError();
   }
 
   const stripeCheckoutSession = await stripe.checkout.sessions.create({
