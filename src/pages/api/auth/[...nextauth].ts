@@ -48,11 +48,15 @@ export default NextAuth({
     },
     async session({ session }) {
       try {
+        if (!session.user?.email) {
+          throw new Error('Missing email');
+        }
+
         const { data: userData } = await supabase
           .from('users')
           .select()
-          .eq('email', session.user?.email?.toLowerCase() ?? '')
-          .single()
+          .eq('email', session.user.email.toLowerCase())
+          .single<User>()
           .throwOnError();
 
         await supabase
