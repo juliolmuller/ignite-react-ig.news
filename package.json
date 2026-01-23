@@ -6,6 +6,7 @@
   "author": "Julio L. Muller",
   "homepage": "https://jlm-ignews.vercel.app/",
   "scripts": {
+    "postinstall": "node -e \"require('fs').existsSync('.env') || require('fs').copyFileSync('.env.example', '.env')\"",
     "webhooks": "./stripe listen --forward-to localhost:8080/api/webhooks",
     "dev": "next dev --port 8080",
     "build": "next build",
