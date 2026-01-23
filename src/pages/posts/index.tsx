@@ -66,6 +66,6 @@ export const getStaticProps: GetStaticProps<PostsPageProps> = async () => {
         }),
       })),
     },
-    revalidate: 60, // 1 hour
+    revalidate: 60 * 60, // 1 hour
   };
 };
