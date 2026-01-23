@@ -7,11 +7,11 @@ import '~/styles.scss';
 
 import Header from '~/components/Header';
 
-export type MyApProps = AppProps<{
+type MyAppProps = AppProps<{
   session: Session;
 }>;
 
-export default function MyApp({ Component, pageProps }: MyApProps): ReactNode {
+export default function MyApp({ Component, pageProps }: MyAppProps): ReactNode {
   return (
     <SessionProvider session={pageProps.session}>
       <Header />
