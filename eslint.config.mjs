@@ -1,4 +1,23 @@
+import nextPlugin from '@next/eslint-plugin-next';
 import anyConfig from 'eslint-config-any';
 import { defineConfig } from 'eslint/config';
 
-export default defineConfig([...anyConfig.react, ...anyConfig.jest]);
+const serverFilePatterns = ['server.cjs'];
+const baseFilesPatterns = ['**/*.{js,ts,tsx}'];
+
+export default defineConfig([
+  ...anyConfig.react,
+  ...[...anyConfig.node, ...anyConfig.commonjs].map((config) => ({
+    ...config,
+    files: serverFilePatterns,
+  })),
+  {
+    ...nextPlugin.configs['core-web-vitals'],
+    files: baseFilesPatterns,
+  },
+  {
+    rules: {
+      '@next/next/no-img-element': 'off',
+    },
+  },
+]);
