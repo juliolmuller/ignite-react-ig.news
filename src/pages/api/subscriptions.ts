@@ -34,7 +34,7 @@ export default async (request: NextApiRequest, response: NextApiResponse): Promi
     .from('users')
     .select()
     .eq('email', session.user.email)
-    .single<User>();
+    .maybeSingle<User>();
 
   if (!userData?.id) {
     response.status(401).end('Unauthorized');
