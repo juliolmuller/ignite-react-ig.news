@@ -19,6 +19,7 @@ export default function SubscribeButton(): ReactNode {
       const response = await fetch('/api/subscriptions', { method: 'POST' });
       const { sessionId } = await response.json();
       const stripe = await getStripe();
+
       await stripe?.redirectToCheckout({ sessionId });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
