@@ -22,6 +22,7 @@ export interface PostPreviewPageProps {
 export default function PostPreviewPage({ post }: PostPreviewPageProps): ReactNode {
   const session = useSession();
   const router = useRouter();
+  const pageTitle = `${post.title} | ig.news`;
 
   useEffect(() => {
     if (session.data?.activeSubscription) {
@@ -32,7 +33,7 @@ export default function PostPreviewPage({ post }: PostPreviewPageProps): ReactNo
   return (
     <>
       <Head>
-        <title>{post.title} | ig.news</title>
+        <title>{pageTitle}</title>
       </Head>
 
       <main className={classes.wrapper}>

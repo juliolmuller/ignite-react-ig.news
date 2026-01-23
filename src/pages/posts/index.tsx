@@ -18,10 +18,12 @@ export interface PostsPageProps {
 }
 
 export default function PostsPage({ posts }: PostsPageProps): ReactNode {
+  const pageTitle = 'Postagens | ig.news';
+
   return (
     <>
       <Head>
-        <title>Postagens | ig.news</title>
+        <title>{pageTitle}</title>
       </Head>
 
       <main className={classes.wrapper}>

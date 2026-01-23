@@ -15,6 +15,7 @@ export interface HomePageProps {
 }
 
 export default function HomePage({ product }: HomePageProps): ReactNode {
+  const pageTitle = 'Home | ig.news';
   const subscriptionPrice = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -23,7 +24,7 @@ export default function HomePage({ product }: HomePageProps): ReactNode {
   return (
     <>
       <Head>
-        <title>Home | ig.news</title>
+        <title>{pageTitle}</title>
       </Head>
 
       <main className={classes.wrapper}>
