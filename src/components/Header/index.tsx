@@ -1,11 +1,11 @@
-import Link from 'next/link';
+import { type ReactNode } from 'react';
 
 import NavLink from '~/components/NavLink';
 import SignInButton from '~/components/SignInButton';
 
 import classes from './styles.module.scss';
 
-export default function Header() {
+export default function Header(): ReactNode {
   return (
     <header className={classes.wrapper}>
       <div className={classes.container}>

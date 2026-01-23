@@ -1,3 +1,4 @@
+/* eslint-disable @eslint-community/eslint-comments/disable-enable-pair, @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any */
 import { render, screen } from '@testing-library/react';
 import { getSession } from 'next-auth/react';
 
@@ -5,8 +6,8 @@ import PostPage, { getServerSideProps } from '../../src/pages/posts/[slug]';
 
 jest.mock('next-auth/react');
 jest.mock('@prismicio/helpers', () => ({
-  asHTML: (value: any) => value,
-  asText: (value: any) => value,
+  asHTML: (value: unknown) => value as string,
+  asText: (value: unknown) => value as string,
 }));
 jest.mock('~/services/server/prismic', () => ({
   getPrismicClient: () => ({

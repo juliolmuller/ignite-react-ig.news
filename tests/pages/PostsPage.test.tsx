@@ -1,9 +1,10 @@
+/* eslint-disable @eslint-community/eslint-comments/disable-enable-pair, @typescript-eslint/explicit-function-return-type */
 import { render, screen } from '@testing-library/react';
 
 import PostsPage, { getStaticProps } from '../../src/pages/posts';
 
 jest.mock('@prismicio/helpers', () => ({
-  asText: (value: any) => value,
+  asText: (value: unknown): string => value as string,
 }));
 jest.mock('~/services/server/prismic', () => ({
   getPrismicClient: () => ({

@@ -1,12 +1,12 @@
-import { query } from 'faunadb';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { Readable } from 'stream';
-import Stripe from 'stripe';
+import { type NextApiRequest, type NextApiResponse } from 'next';
+import { type Readable } from 'stream';
+import type Stripe from 'stripe';
 
-import fauna from '~/services/server/fauna';
 import stripe from '~/services/server/stripe';
+import supabase from '~/services/server/supabase';
+import { type User } from '~/types';
 
-async function requestToBuffer(readable: Readable) {
+async function requestToBuffer(readable: Readable): Promise<Buffer> {
   const chunks: Buffer[] = [];
 
   for await (const chunk of readable) {
@@ -20,47 +20,31 @@ async function saveSubscription(
   subscriptionId: string,
   customerId: string,
   isUpdating = false,
-) {
-  const userRef = await fauna.query(
-    query.Select(
-      'ref',
-      query.Get(
-        query.Match(query.Index('user_by_stripe_customer_id'), customerId),
-      ),
-    ),
-  );
-  const stripeSubscription = await stripe.subscriptions.retrieve(
-    subscriptionId,
-  );
-  const subscription = {
-    user_id: userRef,
+): Promise<void> {
+  const { data: userData } = await supabase
+    .from('users')
+    .select()
+    .eq('stripe_customer_id', customerId)
+    .single<User>()
+    .throwOnError();
+  const stripeSubscription = await stripe.subscriptions.retrieve(subscriptionId);
+  const subscriptionToSave = {
+    user_id: userData.id,
     stripe_id: stripeSubscription.id,
     stripe_price_id: stripeSubscription.items.data[0].price.id,
     status: stripeSubscription.status,
   };
 
   if (isUpdating) {
-    await fauna.query(
-      query.Replace(
-        query.Select(
-          'ref',
-          query.Get(
-            query.Match(
-              query.Index('subscription_by_stripe_id'),
-              subscriptionId,
-            ),
-          ),
-        ),
-        { data: subscription },
-      ),
-    );
-  } else {
-    await fauna.query(
-      query.Create(query.Collection('subscriptions'), {
-        data: subscription,
-      }),
-    );
+    await supabase
+      .from('subscriptions')
+      .update(subscriptionToSave)
+      .eq('stripe_id', stripeSubscription.id)
+      .throwOnError();
+    return;
   }
+
+  await supabase.from('subscriptions').insert(subscriptionToSave).throwOnError();
 }
 
 export const config = {
@@ -69,7 +53,7 @@ export const config = {
   },
 };
 
-export default async (request: NextApiRequest, response: NextApiResponse) => {
+export default async (request: NextApiRequest, response: NextApiResponse): Promise<void> => {
   if (request.method !== 'POST') {
     response.setHeader('Allow', 'POST');
     response.status(405).end('Method Not Allowed');
@@ -85,30 +69,35 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
       request.headers['stripe-signature']!,
       process.env.STRIPE_WEBHOOK_SECRET!,
     );
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     response.status(400).end(`Webhook Error: ${error.message}`);
     return;
   }
 
   switch (stripeEvent.type) {
-    case 'checkout.session.completed':
-      const checkoutSession = stripeEvent.data
-        .object as Stripe.Checkout.Session;
+    case 'checkout.session.completed': {
+      const checkoutSession = stripeEvent.data.object as Stripe.Checkout.Session;
+
       await saveSubscription(
-        checkoutSession.subscription?.toString()!,
-        checkoutSession.customer?.toString()!,
+        checkoutSession.subscription?.toString() ?? '',
+        checkoutSession.customer?.toString() ?? '',
       );
       break;
+    }
 
     case 'customer.subscription.created':
-    case 'customer.subscription.updated':
     case 'customer.subscription.deleted':
+    case 'customer.subscription.updated': {
       const subscription = stripeEvent.data.object as Stripe.Subscription;
+
       await saveSubscription(
         subscription.id,
-        subscription.customer?.toString()!,
+        subscription.customer?.toString() ?? '',
         !stripeEvent.type.endsWith('created'),
       );
+      break;
+    }
   }
 
   response.status(200).end();

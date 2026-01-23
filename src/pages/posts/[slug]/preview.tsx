@@ -1,10 +1,10 @@
 import { asHTML, asText } from '@prismicio/helpers';
-import { GetStaticPaths, GetStaticProps } from 'next';
+import { type GetStaticPaths, type GetStaticProps } from 'next';
 import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { type ReactNode, useEffect } from 'react';
 
 import { getPrismicClient } from '~/services/server/prismic';
 
@@ -12,16 +12,17 @@ import classes from './styles.module.scss';
 
 export interface PostPreviewPageProps {
   post: {
+    content: string;
     slug: string;
     title: string;
-    content: string;
     updatedAt: string;
   };
 }
 
-export default function PostPreviewPage({ post }: PostPreviewPageProps) {
+export default function PostPreviewPage({ post }: PostPreviewPageProps): ReactNode {
   const session = useSession();
   const router = useRouter();
+  const pageTitle = `${post.title} | ig.news`;
 
   useEffect(() => {
     if (session.data?.activeSubscription) {
@@ -32,7 +33,7 @@ export default function PostPreviewPage({ post }: PostPreviewPageProps) {
   return (
     <>
       <Head>
-        <title>{post.title} | ig.news</title>
+        <title>{pageTitle}</title>
       </Head>
 
       <main className={classes.wrapper}>
@@ -41,17 +42,11 @@ export default function PostPreviewPage({ post }: PostPreviewPageProps) {
             <h1>{post.title}</h1>
             <time>{post.updatedAt}</time>
           </header>
-          <main
-            className={classes.preview}
-            dangerouslySetInnerHTML={{ __html: post.content }}
-          />
+
+          <main className={classes.preview} dangerouslySetInnerHTML={{ __html: post.content }} />
+
           <div className={classes.continueReading}>
-            Wanna continue reading?{' '}
-            <Link href="/">
-              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-              <a>Subscribe now</a>
-            </Link>{' '}
-            🤗
+            Wanna continue reading? <Link href="/">Subscribe now</Link> 🤗
           </div>
         </article>
       </main>
@@ -68,9 +63,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps<PostPreviewPageProps> = async ({
-  params,
-}) => {
+export const getStaticProps: GetStaticProps<PostPreviewPageProps> = async ({ params }) => {
   const postSlug = String(params?.slug);
   const prismicClient = getPrismicClient();
   const post = await prismicClient.getByUID('post', postSlug);
@@ -80,15 +73,12 @@ export const getStaticProps: GetStaticProps<PostPreviewPageProps> = async ({
       post: {
         slug: post.uid ?? '',
         title: asText(post.data.title) ?? '',
-        content: asHTML(post.data.content.splice(0, 3)) ?? '',
-        updatedAt: new Date(post.last_publication_date).toLocaleDateString(
-          'pt-BR',
-          {
-            day: '2-digit',
-            month: 'long',
-            year: 'numeric',
-          },
-        ),
+        content: asHTML(post.data.content.slice(0, 3)) ?? '',
+        updatedAt: new Date(post.last_publication_date).toLocaleDateString('pt-BR', {
+          day: '2-digit',
+          month: 'long',
+          year: 'numeric',
+        }),
       },
     },
     revalidate: 60 * 60 * 2, // 2 hours

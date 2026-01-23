@@ -1,3 +1,4 @@
+/* eslint-disable @eslint-community/eslint-comments/disable-enable-pair, @typescript-eslint/no-explicit-any */
 import { fireEvent, render, screen } from '@testing-library/react';
 import { signIn, signOut, useSession } from 'next-auth/react';
 

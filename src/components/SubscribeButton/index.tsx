@@ -1,14 +1,15 @@
 import { signIn, useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { type ReactNode } from 'react';
 
 import { getStripe } from '~/services/client/stripe';
 
 import classes from './styles.module.scss';
 
-export default function SubscribeButton() {
+export default function SubscribeButton(): ReactNode {
   const session = useSession();
 
-  async function handleClick() {
+  async function handleClick(): Promise<void> {
     if (session.status !== 'authenticated') {
       signIn('github');
       return;
@@ -18,16 +19,16 @@ export default function SubscribeButton() {
       const response = await fetch('/api/subscriptions', { method: 'POST' });
       const { sessionId } = await response.json();
       const stripe = await getStripe();
+
       await stripe?.redirectToCheckout({ sessionId });
-    } catch (error: any) {
-      alert(error.message);
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Subscription failed');
     }
   }
 
   return session.data?.activeSubscription ? (
-    <Link href="/posts">
-      {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-      <a className={classes.wrapper}>Read latest posts</a>
+    <Link href="/posts" className={classes.wrapper}>
+      Read latest posts
     </Link>
   ) : (
     <button className={classes.wrapper} type="button" onClick={handleClick}>

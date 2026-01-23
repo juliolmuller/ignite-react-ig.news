@@ -1,4 +1,6 @@
-import { Config } from '@jest/types';
+/** @jest-config-loader ts-node */
+import { type Config } from '@jest/types';
+import nextJest from 'next/jest';
 
 const config: Config.InitialOptions = {
   moduleNameMapper: {
@@ -12,4 +14,8 @@ const config: Config.InitialOptions = {
   testPathIgnorePatterns: ['/node_modules/', '/.next/'],
 };
 
-export default config;
+const createJestConfig = nextJest({
+  dir: './',
+});
+
+export default createJestConfig(config);

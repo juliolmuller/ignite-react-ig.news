@@ -1,5 +1,6 @@
-import { GetStaticProps } from 'next';
+import { type GetStaticProps } from 'next';
 import Head from 'next/head';
+import { type ReactNode } from 'react';
 
 import SubscribeButton from '~/components/SubscribeButton';
 import stripe from '~/services/server/stripe';
@@ -8,12 +9,13 @@ import classes from './styles.module.scss';
 
 export interface HomePageProps {
   product: {
-    priceId: string;
     amount: number;
+    priceId: string;
   };
 }
 
-export default function HomePage({ product }: HomePageProps) {
+export default function HomePage({ product }: HomePageProps): ReactNode {
+  const pageTitle = 'Home | ig.news';
   const subscriptionPrice = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -22,7 +24,7 @@ export default function HomePage({ product }: HomePageProps) {
   return (
     <>
       <Head>
-        <title>Home | ig.news</title>
+        <title>{pageTitle}</title>
       </Head>
 
       <main className={classes.wrapper}>
