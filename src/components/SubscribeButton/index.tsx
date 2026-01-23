@@ -21,9 +21,8 @@ export default function SubscribeButton(): ReactNode {
       const stripe = await getStripe();
 
       await stripe?.redirectToCheckout({ sessionId });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      alert(error.message);
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Subscription failed');
     }
   }
 
