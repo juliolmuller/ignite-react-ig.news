@@ -1,0 +1,18 @@
+name: Prevent Supabase Pausing
+
+on:
+  schedule:
+    # Run at midnight (0 0 * *) on Sunday (0) and Friday(5)
+    - cron: '0 0 * * 0,5'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase Database
+        run: |
+          curl "${{ secrets.SUPABASE_URL }}/rest/v1/subscriptions?select=id&limit=1" \
+               -X GET \
+               -H "apikey: ${{ secrets.SUPABASE_KEY }}" \
+               -H "authorization: Bearer ${{ secrets.SUPABASE_KEY }}"
